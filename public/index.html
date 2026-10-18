@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merry Berry Murray Manor</title>
+<meta name="theme-color" content="#14201A">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWVycnkgQmVycnkgTXVycmF5IE1hbm9yIiwic2hvcnRfbmFtZSI6IkhvdXNlIExvZyIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzE0MjAxQSIsInRoZW1lX2NvbG9yIjoiIzE0MjAxQSJ9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#14201A;
+    --card:#1C2B23;
+    --card-2:#26382D;
+    --ink:#EDE4D0;
+    --ink-soft:#BDB59F;
+    --ink-faint:#928E78;
+    --line:#35493C;
+    --accent:#C9A24B;
+    --accent-ink:#1A1408;
+    --accent-soft:#3A3320;
+    --good:#7CC9AB;
+    --good-soft:#1F3F36;
+    --warn:#E6B655;
+    --warn-soft:#40341D;
+    --bad:#F0907C;
+    --bad-soft:#4B2B26;
+    --neutral:#928E78;
+    --neutral-soft:#26382D;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.35);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Libre Franklin', system-ui, sans-serif;
+    font-size:15px;
+    line-height:1.45;
+    -webkit-tap-highlight-color:transparent;
+  }
+  h1,h2,h3{font-family:'Cormorant Garamond', Georgia, serif; text-wrap:balance; margin:0;}
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace;}
+  button{font-family:inherit;}
+  a{color:var(--accent);}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  ::selection{background:var(--accent-soft);}
+
+  #app{display:flex; flex-direction:column; height:100%;}
+
+  header.top{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding:14px 16px 12px;
+  }
+  .top-row{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .brand{min-width:0;}
+  .brand h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.15;}
+  .brand .tag{display:block; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px;}
+  .conn-dot{width:8px; height:8px; border-radius:50%; background:var(--neutral); flex-shrink:0; margin-top:6px;}
+  .conn-dot.ok{background:var(--good);}
+  .conn-dot.bad{background:var(--bad);}
+  .search-row{margin-top:12px; display:flex; gap:8px;}
+  .search-row input[type="search"]{
+    flex:1; border:1px solid var(--line); background:var(--card); color:var(--ink);
+    border-radius:10px; padding:9px 12px; font-size:14px; min-width:0;
+  }
+  .search-row input::placeholder{color:var(--ink-faint);}
+
+  main{flex:1; overflow-y:auto; padding:16px 16px calc(96px + env(safe-area-inset-bottom,0px)); max-width:640px; margin:0 auto; width:100%;}
+
+  .readonly-banner{
+    background:var(--warn-soft); color:var(--warn); border:1px solid var(--warn);
+    border-radius:10px; padding:10px 12px; font-size:12.5px; margin-bottom:14px;
+  }
+  .error-banner{
+    background:var(--bad-soft); color:var(--bad); border:1px solid var(--bad);
+    border-radius:10px; padding:10px 12px; font-size:12.5px; margin-bottom:14px; line-height:1.5;
+  }
+  .error-banner button{
+    display:block; margin-top:8px; background:var(--bad); color:#fff; border:none;
+    border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;
+  }
+
+  section.block{margin-bottom:26px;}
+  section.block h2{font-size:13px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-soft); font-family:'Libre Franklin',sans-serif; font-weight:700; margin-bottom:10px;}
+
+  .stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:22px;}
+  .stat-tile{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 10px; text-align:center; box-shadow:var(--shadow);}
+  .stat-tile .n{font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; font-variant-numeric:tabular-nums;}
+  .stat-tile .l{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:13px 14px; margin-bottom:9px; box-shadow:var(--shadow); cursor:pointer;
+  }
+  .card:active{transform:scale(0.996);}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .card-title{font-weight:600; font-size:15px; flex:1; min-width:0;}
+  .card-sub{color:var(--ink-soft); font-size:12.5px; margin-top:2px;}
+  .card-meta{display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; align-items:center;}
+
+  .tag{
+    display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:600;
+    padding:3px 8px; border-radius:100px; letter-spacing:.02em; white-space:nowrap;
+  }
+  .tag.cat{background:var(--neutral-soft); color:var(--ink-soft);}
+  .tag.status-good{background:var(--good-soft); color:var(--good);}
+  .tag.status-warn{background:var(--warn-soft); color:var(--warn);}
+  .tag.status-bad{background:var(--bad-soft); color:var(--bad);}
+  .tag.status-neutral{background:var(--neutral-soft); color:var(--ink-faint);}
+  .tag.example{background:var(--accent-soft); color:var(--accent);}
+  .cost{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums;}
+
+  .attn-row{
+    display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid var(--line);
+    border-radius:12px; padding:11px 12px; margin-bottom:8px; box-shadow:var(--shadow);
+  }
+  .attn-stripe{width:4px; align-self:stretch; border-radius:3px; flex-shrink:0;}
+  .attn-stripe.status-bad{background:var(--bad);}
+  .attn-stripe.status-warn{background:var(--warn);}
+  .attn-body{flex:1; min-width:0;}
+  .attn-title{font-weight:600; font-size:14px;}
+  .attn-due{font-size:12px; color:var(--ink-soft); margin-top:1px;}
+  .btn-mini{
+    border:1px solid var(--line); background:var(--card-2); color:var(--ink); border-radius:8px;
+    padding:7px 10px; font-size:12px; font-weight:600; white-space:nowrap; cursor:pointer;
+  }
+  .btn-mini:active{opacity:.75;}
+
+  .empty{
+    text-align:center; padding:36px 20px; color:var(--ink-soft);
+  }
+  .empty h3{font-size:17px; margin-bottom:6px; color:var(--ink);}
+  .empty p{font-size:13.5px; margin:0;}
+
+  nav.bottom{
+    position:fixed; left:0; right:0; bottom:0; z-index:20;
+    background:var(--card); border-top:1px solid var(--line);
+    display:flex; padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));
+    max-width:640px; margin:0 auto; width:100%;
+  }
+  @media (min-width:640px){ nav.bottom{ border-left:1px solid var(--line); border-right:1px solid var(--line); border-radius:14px 14px 0 0; bottom:0; } }
+  nav.bottom button{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:none; border:none; color:var(--ink-faint); padding:6px 2px; border-radius:10px; cursor:pointer;
+  }
+  nav.bottom button svg{width:21px; height:21px;}
+  nav.bottom button .lbl{font-size:10.5px; font-weight:600;}
+  nav.bottom button.active{color:var(--accent);}
+
+  .fab{
+    position:fixed; right:calc(50% - 320px + 18px); bottom:calc(76px + env(safe-area-inset-bottom,0px)); z-index:19;
+    width:52px; height:52px; border-radius:50%; background:var(--accent); color:var(--accent-ink);
+    border:none; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  @media (max-width:676px){ .fab{ right:18px; } }
+  .fab svg{width:24px; height:24px;}
+  .fab:active{transform:scale(0.94);}
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(4,10,7,0.66); z-index:30;
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .18s ease;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .sheet{
+    background:var(--paper); width:100%; max-width:640px; border-radius:18px 18px 0 0;
+    max-height:88dvh; display:flex; flex-direction:column;
+    transform:translateY(16px); transition:transform .18s ease;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .overlay.open .sheet{transform:translateY(0);}
+  @media (prefers-reduced-motion:reduce){ .overlay,.sheet{transition:none;} }
+  .sheet-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 16px 10px; border-bottom:1px solid var(--line); flex-shrink:0;
+  }
+  .sheet-head h2{font-size:17px; font-weight:600;}
+  .icon-btn{background:none; border:none; color:var(--ink-soft); cursor:pointer; padding:6px; display:flex; border-radius:8px;}
+  .icon-btn:active{background:var(--card-2);}
+  .icon-btn svg{width:20px; height:20px;}
+  .sheet-body{padding:14px 16px 22px; overflow-y:auto;}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin-bottom:5px; text-transform:uppercase; letter-spacing:.04em;}
+  .field input, .field select, .field textarea{
+    width:100%; border:1px solid var(--line); background:var(--card); color:var(--ink);
+    border-radius:10px; padding:10px 11px; font-size:15px; font-family:inherit;
+  }
+  .field textarea{resize:vertical; min-height:64px;}
+  .field-row{display:flex; gap:10px;}
+  .field-row .field{flex:1;}
+  .hint{font-size:11.5px; color:var(--ink-faint); margin-top:4px;}
+
+  .form-actions{display:flex; gap:10px; margin-top:6px;}
+  .btn{
+    flex:1; border:none; border-radius:10px; padding:12px; font-size:14.5px; font-weight:700; cursor:pointer;
+  }
+  .btn.primary{background:var(--accent); color:var(--accent-ink);}
+  .btn.primary:active{opacity:.85;}
+  .btn.ghost{background:var(--card-2); color:var(--ink);}
+  .btn.danger{background:var(--bad-soft); color:var(--bad);}
+  .btn:disabled{opacity:.5; cursor:default;}
+
+  .detail-section{margin-bottom:16px;}
+  .detail-section h3{font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); margin-bottom:6px; font-weight:700; font-family:'Libre Franklin',sans-serif;}
+  .kv-row{display:flex; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .kv-row:last-child{border-bottom:none;}
+  .kv-row .k{color:var(--ink-soft);}
+  .kv-row .v{text-align:right; font-weight:500;}
+  .contact-line{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .contact-line:last-child{border-bottom:none;}
+  .contact-line a{color:var(--ink); text-decoration:none; font-size:14px;}
+  .copy-btn{background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:4px; display:flex;}
+  .copy-btn svg{width:16px; height:16px;}
+  .notes-block{white-space:pre-wrap; font-size:13.5px; color:var(--ink-soft); line-height:1.55;}
+  .related-project{padding:9px 0; border-bottom:1px solid var(--line); cursor:pointer;}
+  .related-project:last-child{border-bottom:none;}
+
+  .confirm-row{display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--bad-soft); border-radius:10px; padding:10px 12px; margin-top:10px;}
+  .confirm-row span{font-size:13px; color:var(--bad); font-weight:600;}
+  .confirm-row .ops{display:flex; gap:8px;}
+
+  .toast{
+    position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%) translateY(8px);
+    background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:100px; font-size:13px; font-weight:600;
+    z-index:40; opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; box-shadow:var(--shadow);
+    max-width:88%; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  .filter-chips{display:flex; gap:7px; overflow-x:auto; padding-bottom:2px; margin-bottom:12px;}
+  .filter-chips::-webkit-scrollbar{display:none;}
+  .chip{
+    flex-shrink:0; border:1px solid var(--line); background:var(--card); color:var(--ink-soft);
+    border-radius:100px; padding:6px 13px; font-size:12.5px; font-weight:600; cursor:pointer; white-space:nowrap;
+  }
+  .chip.active{background:var(--accent); color:var(--accent-ink); border-color:var(--accent);}
+
+  .clear-examples{font-size:12px; color:var(--ink-faint); text-align:center; padding:4px 64px 4px 4px;}
+  .clear-examples button{background:none; border:none; color:var(--accent); font-weight:700; cursor:pointer; font-size:12px; padding:0;}
+
+  .setup-wrap{max-width:440px; margin:40px auto; padding:0 20px;}
+  .setup-wrap h2{font-size:20px; margin-bottom:8px;}
+  .setup-wrap p{color:var(--ink-soft); font-size:13.5px; line-height:1.6; margin:0 0 18px;}
+  .setup-wrap ol{color:var(--ink-soft); font-size:13.5px; line-height:1.7; padding-left:20px; margin:0 0 18px;}
+
+  /* ===== Dark academia: pattern, vines, type ===== */
+  html{background:var(--paper);}
+  body, header.top{
+    background-color:var(--paper);
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='220'%20height='220'%20viewBox='0%200%20220%20220'%3E%3Cdefs%3E%3Cpath%20id='l'%20d='M0,0%20C6,-9%2017,-9%2024,0%20C17,9%206,9%200,0Z'/%3E%3Cg%20id='f'%3E%3Cg%20fill='none'%20stroke='rgba(201,162,75,0.5)'%20stroke-width='1'%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'/%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'%20transform='rotate(72)'/%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'%20transform='rotate(144)'/%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'%20transform='rotate(216)'/%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'%20transform='rotate(288)'/%3E%3C/g%3E%3Ccircle%20r='2.4'%20fill='rgba(201,162,75,0.55)'/%3E%3C/g%3E%3C/defs%3E%3Cg%20fill='none'%20stroke='rgba(201,162,75,0.24)'%20stroke-width='1.4'%20stroke-linecap='round'%3E%3Cpath%20d='M0,70%20C40,30%2080,110%20120,70%20S180,110%20220,70'/%3E%3Cpath%20d='M60,96%20C66,108%2078,110%2082,102'%20/%3E%3Cpath%20d='M170,44%20C176,32%20188,30%20192,38'%20/%3E%3Cpath%20d='M30,176%20C46,160%2062,176%2078,160'%20/%3E%3Cpath%20d='M150,176%20C166,192%20182,176%20198,190'%20/%3E%3C/g%3E%3Cg%20fill='rgba(143,190,140,0.18)'%3E%3Cuse%20href='%23l'%20transform='translate(30,59)%20rotate(-52)'/%3E%3Cuse%20href='%23l'%20transform='translate(30,59)%20rotate(38)%20scale(.8)'/%3E%3Cuse%20href='%23l'%20transform='translate(90,81)%20rotate(36)'/%3E%3Cuse%20href='%23l'%20transform='translate(90,81)%20rotate(-140)%20scale(.85)'/%3E%3Cuse%20href='%23l'%20transform='translate(147,59)%20rotate(-48)'/%3E%3Cuse%20href='%23l'%20transform='translate(147,59)%20rotate(40)%20scale(.8)'/%3E%3Cuse%20href='%23l'%20transform='translate(193,81)%20rotate(34)'/%3E%3Cuse%20href='%23l'%20transform='translate(193,81)%20rotate(-136)%20scale(.85)'/%3E%3Cuse%20href='%23l'%20transform='translate(54,168)%20rotate(-40)%20scale(.7)'/%3E%3Cuse%20href='%23l'%20transform='translate(172,184)%20rotate(30)%20scale(.7)'/%3E%3C/g%3E%3Cg%20fill='rgba(201,162,75,0.30)'%3E%3Ccircle%20cx='82'%20cy='102'%20r='3'/%3E%3Ccircle%20cx='192'%20cy='38'%20r='3'/%3E%3Ccircle%20cx='88'%20cy='108'%20r='2.2'/%3E%3Ccircle%20cx='198'%20cy='44'%20r='2.2'/%3E%3Ccircle%20cx='78'%20cy='160'%20r='2.6'/%3E%3Ccircle%20cx='198'%20cy='190'%20r='2.6'/%3E%3C/g%3E%3Cuse%20href='%23f'%20transform='translate(112,160)'/%3E%3C/svg%3E");
+    background-size:220px 220px;
+    background-attachment:fixed;
+  }
+  body{ font-size:15px; }
+  h1,h2,h3{ letter-spacing:.005em; }
+  .brand h1{ font-size:27px; font-weight:700; line-height:1.05; letter-spacing:.01em; color:var(--ink); display:flex; align-items:center; gap:8px; }
+  .brand h1::before{ content:""; width:26px; height:26px; flex-shrink:0; background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='26'%20height='26'%20viewBox='0%200%2026%2026'%3E%3Cdefs%3E%3Cpath%20id='l'%20d='M0,0%20C6,-9%2017,-9%2024,0%20C17,9%206,9%200,0Z'/%3E%3C/defs%3E%3Cpath%20d='M4,23%20C8,15%2012,10%2020,3'%20fill='none'%20stroke='%23C9A24B'%20stroke-width='1.5'%20stroke-linecap='round'/%3E%3Cg%20fill='%238FBE8C'%3E%3Cuse%20href='%23l'%20transform='translate(7,18)%20rotate(-70)%20scale(.55)'/%3E%3Cuse%20href='%23l'%20transform='translate(10,14)%20rotate(-5)%20scale(.55)'/%3E%3Cuse%20href='%23l'%20transform='translate(13,10)%20rotate(-75)%20scale(.5)'/%3E%3Cuse%20href='%23l'%20transform='translate(16,7)%20rotate(0)%20scale(.5)'/%3E%3C/g%3E%3Ccircle%20cx='21'%20cy='3.5'%20r='2'%20fill='%23C9A24B'/%3E%3C/svg%3E") center/contain no-repeat; }
+  .brand .tag{ color:var(--accent); letter-spacing:.16em; margin-top:4px; padding-left:34px; }
+  header.top{ background-image:linear-gradient(rgba(20,32,26,0.82), rgba(20,32,26,0.82)), url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='220'%20height='220'%20viewBox='0%200%20220%20220'%3E%3Cdefs%3E%3Cpath%20id='l'%20d='M0,0%20C6,-9%2017,-9%2024,0%20C17,9%206,9%200,0Z'/%3E%3Cg%20id='f'%3E%3Cg%20fill='none'%20stroke='rgba(201,162,75,0.5)'%20stroke-width='1'%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'/%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'%20transform='rotate(72)'/%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'%20transform='rotate(144)'/%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'%20transform='rotate(216)'/%3E%3Cellipse%20cx='0'%20cy='-9'%20rx='3.6'%20ry='7'%20transform='rotate(288)'/%3E%3C/g%3E%3Ccircle%20r='2.4'%20fill='rgba(201,162,75,0.55)'/%3E%3C/g%3E%3C/defs%3E%3Cg%20fill='none'%20stroke='rgba(201,162,75,0.24)'%20stroke-width='1.4'%20stroke-linecap='round'%3E%3Cpath%20d='M0,70%20C40,30%2080,110%20120,70%20S180,110%20220,70'/%3E%3Cpath%20d='M60,96%20C66,108%2078,110%2082,102'%20/%3E%3Cpath%20d='M170,44%20C176,32%20188,30%20192,38'%20/%3E%3Cpath%20d='M30,176%20C46,160%2062,176%2078,160'%20/%3E%3Cpath%20d='M150,176%20C166,192%20182,176%20198,190'%20/%3E%3C/g%3E%3Cg%20fill='rgba(143,190,140,0.18)'%3E%3Cuse%20href='%23l'%20transform='translate(30,59)%20rotate(-52)'/%3E%3Cuse%20href='%23l'%20transform='translate(30,59)%20rotate(38)%20scale(.8)'/%3E%3Cuse%20href='%23l'%20transform='translate(90,81)%20rotate(36)'/%3E%3Cuse%20href='%23l'%20transform='translate(90,81)%20rotate(-140)%20scale(.85)'/%3E%3Cuse%20href='%23l'%20transform='translate(147,59)%20rotate(-48)'/%3E%3Cuse%20href='%23l'%20transform='translate(147,59)%20rotate(40)%20scale(.8)'/%3E%3Cuse%20href='%23l'%20transform='translate(193,81)%20rotate(34)'/%3E%3Cuse%20href='%23l'%20transform='translate(193,81)%20rotate(-136)%20scale(.85)'/%3E%3Cuse%20href='%23l'%20transform='translate(54,168)%20rotate(-40)%20scale(.7)'/%3E%3Cuse%20href='%23l'%20transform='translate(172,184)%20rotate(30)%20scale(.7)'/%3E%3C/g%3E%3Cg%20fill='rgba(201,162,75,0.30)'%3E%3Ccircle%20cx='82'%20cy='102'%20r='3'/%3E%3Ccircle%20cx='192'%20cy='38'%20r='3'/%3E%3Ccircle%20cx='88'%20cy='108'%20r='2.2'/%3E%3Ccircle%20cx='198'%20cy='44'%20r='2.2'/%3E%3Ccircle%20cx='78'%20cy='160'%20r='2.6'/%3E%3Ccircle%20cx='198'%20cy='190'%20r='2.6'/%3E%3C/g%3E%3Cuse%20href='%23f'%20transform='translate(112,160)'/%3E%3C/svg%3E"); border-bottom:1px solid #6B5A2E; box-shadow:0 6px 14px rgba(0,0,0,0.35); }
+  header.top::after{
+    content:""; position:absolute; left:0; right:0; bottom:-10px; height:18px; pointer-events:none;
+    background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='18'%20viewBox='0%200%20160%2018'%3E%3Cdefs%3E%3Cpath%20id='l'%20d='M0,0%20C6,-9%2017,-9%2024,0%20C17,9%206,9%200,0Z'/%3E%3C/defs%3E%3Cpath%20d='M0,9%20C20,1%2040,17%2080,9%20S140,1%20160,9'%20fill='none'%20stroke='rgba(201,162,75,0.75)'%20stroke-width='1.3'%20stroke-linecap='round'/%3E%3Cg%20fill='rgba(143,190,140,0.8)'%3E%3Cuse%20href='%23l'%20transform='translate(20,6)%20rotate(-45)%20scale(.5)'/%3E%3Cuse%20href='%23l'%20transform='translate(60,13)%20rotate(35)%20scale(.5)'/%3E%3Cuse%20href='%23l'%20transform='translate(100,6)%20rotate(-45)%20scale(.5)'/%3E%3Cuse%20href='%23l'%20transform='translate(140,5)%20rotate(35)%20scale(.5)'/%3E%3C/g%3E%3Cg%20fill='rgba(201,162,75,0.9)'%3E%3Ccircle%20cx='40'%20cy='11'%20r='1.6'/%3E%3Ccircle%20cx='120'%20cy='9'%20r='1.6'/%3E%3Ccircle%20cx='80'%20cy='9'%20r='1.3'/%3E%3C/g%3E%3C/svg%3E") repeat-x center/160px 18px;
+  }
+  .search-row input[type="search"]{ background:rgba(12,22,16,0.7); border-color:var(--line); }
+  .search-row input[type="search"]:focus{ border-color:var(--accent); outline:none; }
+  main{ padding-top:26px; }
+
+  section.block h2{ color:var(--accent); display:flex; align-items:center; gap:8px; letter-spacing:.14em; }
+  section.block h2::before{ content:""; width:16px; height:16px; flex-shrink:0; background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='16'%20height='16'%20viewBox='-2%20-9%2028%2018'%3E%3Cpath%20d='M0,0%20C6,-9%2017,-9%2024,0%20C17,9%206,9%200,0Z'%20fill='%238FBE8C'/%3E%3Cpath%20d='M0,0%20L22,0'%20stroke='%2314201A'%20stroke-width='1'/%3E%3C/svg%3E") center/contain no-repeat; }
+  section.block h2::after{ content:""; flex:1; height:1px; background:linear-gradient(90deg, #6B5A2E, transparent); }
+
+  .stat-tile{ background:linear-gradient(180deg, var(--card), #17241D); border-color:#4A5A3E; }
+  .stat-tile .n{ color:var(--accent); font-size:34px; font-weight:700; line-height:1.1; }
+  .stat-tile .l{ letter-spacing:.06em; text-transform:uppercase; font-size:10.5px; }
+
+  .card, .attn-row{ background:var(--card); border-color:var(--line); box-shadow:var(--shadow), inset 0 1px 0 rgba(201,162,75,0.10); }
+  .card:hover{ border-color:#6B5A2E; }
+  .card-title{ font-family:'Cormorant Garamond', Georgia, serif; font-size:19px; font-weight:700; line-height:1.2; color:var(--ink); }
+  .tag.cat{ background:var(--card-2); color:var(--ink-soft); border:1px solid var(--line); }
+  .tag.example{ background:var(--accent-soft); color:var(--accent); }
+  .cost{ color:var(--accent); }
+  .chip{ background:transparent; border-color:var(--line); }
+  .chip.active{ box-shadow:0 0 0 2px rgba(201,162,75,0.2); }
+
+  .empty{ padding-top:70px; position:relative; background:rgba(20,32,26,0.82); border-radius:14px; }
+  .empty::before{ content:""; position:absolute; top:6px; left:50%; width:56px; height:56px; margin-left:-28px; background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='56'%20height='56'%20viewBox='-28%20-28%2056%2056'%3E%3Cg%20fill='none'%20stroke='%23C9A24B'%20stroke-width='1.3'%20opacity='.8'%3E%3Cellipse%20cx='0'%20cy='-11'%20rx='5'%20ry='9'/%3E%3Cellipse%20cx='0'%20cy='-11'%20rx='5'%20ry='9'%20transform='rotate(60)'/%3E%3Cellipse%20cx='0'%20cy='-11'%20rx='5'%20ry='9'%20transform='rotate(120)'/%3E%3Cellipse%20cx='0'%20cy='-11'%20rx='5'%20ry='9'%20transform='rotate(180)'/%3E%3Cellipse%20cx='0'%20cy='-11'%20rx='5'%20ry='9'%20transform='rotate(240)'/%3E%3Cellipse%20cx='0'%20cy='-11'%20rx='5'%20ry='9'%20transform='rotate(300)'/%3E%3C/g%3E%3Ccircle%20r='3.5'%20fill='%23C9A24B'/%3E%3C/svg%3E") center/contain no-repeat; }
+  .empty h3{ font-size:23px; }
+  .empty[style]::before{ display:none; }
+
+  nav.bottom{ background:#101a14; border-top:1px solid #6B5A2E; box-shadow:0 -6px 16px rgba(0,0,0,0.4); }
+  nav.bottom button.active{ color:var(--accent); }
+  .fab{ box-shadow:0 0 0 3px rgba(201,162,75,0.25), 0 6px 16px rgba(0,0,0,0.5); }
+
+  .overlay .sheet{ background:#182419; border:1px solid #6B5A2E; border-bottom:none; }
+  .sheet-head{ border-bottom-color:#6B5A2E; }
+  .sheet-head h2{ font-size:23px; font-weight:700; color:var(--accent); }
+  .field input, .field select, .field textarea{ background:rgba(12,22,16,0.7); }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--accent); outline:none; }
+  .toast{ background:var(--accent); color:var(--accent-ink); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header class="top">
+    <div class="top-row">
+      <div class="brand">
+        <h1>Merry Berry Murray Manor</h1>
+        <span class="tag" id="houseTag">House Log &middot; Est. 2019</span>
+      </div>
+      <div class="conn-dot" id="connDot" title="Saved on this computer"></div>
+    </div>
+    <div class="search-row" id="searchRow" hidden>
+      <input type="search" id="searchInput" placeholder="Search…">
+    </div>
+  </header>
+
+  <main id="main"></main>
+
+  <button class="fab" id="fab" aria-label="Add">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <nav class="bottom">
+    <button data-tab="dashboard" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9h13v-9"/><path d="M10 19v-5.5h4V19"/></svg>
+      <span class="lbl">Home</span>
+    </button>
+    <button data-tab="projects">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5 20.5 9.5 9 21H3v-6L14.5 3.5Z"/><path d="M12.5 5.5 18.5 11.5"/></svg>
+      <span class="lbl">Projects</span>
+    </button>
+    <button data-tab="contacts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.25"/><path d="M5 20c0-3.6 3.13-6 7-6s7 2.4 7 6"/></svg>
+      <span class="lbl">Contacts</span>
+    </button>
+    <button data-tab="maintenance">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="7.25"/><path d="M12 9.5V13l2.5 1.5"/><path d="M9 3.5h6"/></svg>
+      <span class="lbl">Upkeep</span>
+    </button>
+  </nav>
+
+  <div class="overlay" id="overlay">
+    <div class="sheet" id="sheet"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* Shared database for the House Log.
+   Stands in for the Supabase client: same calls (from/select/insert/update/delete/eq),
+   but data lives on the server (Netlify Function + Netlify Blobs) so everyone sees the same thing.
+   First run on a brand-new server is filled from the original schema_and_seed.sql data. */
+(function(){
+  "use strict";
+  var KEY = "murrayManorHouseLog.v1";
+  var SEED = {"contacts": [{"id": "c_wasatch-movers", "name": "Wasatch Movers", "company": "Wasatch Movers", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_utah-maids", "name": "Utah Maids", "company": "Utah Maids", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_bee-line", "name": "Bee Line", "company": "Bee Line", "trade": "Pest Control", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_stanley-steamer", "name": "Stanley Steamer", "company": "Stanley Steamer", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_any-hour", "name": "Any-Hour", "company": "Any-Hour", "trade": "General Contractor", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_utopia-fiber", "name": "Utopia Fiber", "company": "Utopia Fiber", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_rc-willey", "name": "RC Willey", "company": "RC Willey", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_geek-squad", "name": "Geek Squad", "company": "Geek Squad", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_garage-works", "name": "Garage Works", "company": "Garage Works", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_rjs-concrete", "name": "RJS Concrete", "company": "RJS Concrete", "trade": "General Contractor", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_ibex-plumber", "name": "Ibex Plumber", "company": "Ibex Plumber", "trade": "Plumber", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_painter1", "name": "Painter1", "company": "Painter1", "trade": "Painter", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_atwood-cabinets", "name": "Atwood Cabinets", "company": "Atwood Cabinets", "trade": "General Contractor", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_duerden-appliance", "name": "Duerden Appliance", "company": "Duerden Appliance", "trade": "Appliance Repair", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_cutting-edge-window-service", "name": "Cutting Edge Window Service", "company": "Cutting Edge Window Service", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_comfort-solutions", "name": "Comfort Solutions", "company": "Comfort Solutions", "trade": "HVAC Technician", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_hoa", "name": "HOA", "company": "HOA", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_sugarhouse-furniture", "name": "Sugarhouse Furniture", "company": "Sugarhouse Furniture", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_sears", "name": "Sears", "company": "Sears", "trade": "Appliance Repair", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_copper-peaks-plumbing", "name": "Copper Peaks Plumbing", "company": "Copper Peaks Plumbing", "trade": "Plumber", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_revival-windows", "name": "Revival Windows", "company": "Revival Windows", "trade": "General Contractor", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_pro-quality-rain-gutters-llc", "name": "Pro Quality Rain Gutters, LLC", "company": "Pro Quality Rain Gutters, LLC", "trade": "Roofer", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_j-hope-dirt-works-demo-llc", "name": "J Hope Dirt Works & Demo LLC", "company": "J Hope Dirt Works & Demo LLC", "trade": "Landscaper", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_electric-drain-sewer-rooter", "name": "Electric Drain & Sewer Rooter", "company": "Electric Drain & Sewer Rooter", "trade": "Plumber", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_nate-and-kirsten", "name": "Nate and Kirsten", "company": "Nate and Kirsten", "trade": "Other", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_stanfield-shutters", "name": "Stanfield Shutters", "company": "Stanfield Shutters", "trade": "General Contractor", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_saferacks", "name": "SafeRacks", "company": "SafeRacks", "trade": "Handyman", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_thorn-pest-control", "name": "Thorn Pest Control", "company": "Thorn Pest Control", "trade": "Pest Control", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_glen-s-keys", "name": "Glen's Keys", "company": "Glen's Keys", "trade": "Handyman", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_high-climbers", "name": "High Climbers", "company": "High Climbers", "trade": "Landscaper", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_maple-leaf-construction", "name": "Maple Leaf Construction", "company": "Maple Leaf Construction", "trade": "General Contractor", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "c_bob-kiholm", "name": "Bob Kiholm", "company": "Bob Kiholm", "trade": "Landscaper", "phone": "", "email": "", "notes": "", "created_at": 1700000000000, "is_example": false}], "projects": [{"id": "p_001", "title": "Move In", "category": "Other", "status": "Done", "date": "2019-07-15", "cost": null, "contractor_id": "c_wasatch-movers", "notes": "", "created_at": 1700000000000, "is_example": false}, {"id": "p_002", "title": "Move in cleaning", "category": "Other", "status": "Done", "date": "2019-07-16", "cost": null, "contractor_id": "c_utah-maids", "notes": "", "created_at": 1700000000001, "is_example": false}, {"id": "p_003", "title": "Spray for ants/wasps", "category": "Other", "status": "Done", "date": "2019-07-17", "cost": null, "contractor_id": "c_bee-line", "notes": "", "created_at": 1700000000002, "is_example": false}, {"id": "p_004", "title": "Tile Cleaned", "category": "Other", "status": "Done", "date": "2019-07-17", "cost": null, "contractor_id": "c_stanley-steamer", "notes": "Entry and Kitchen", "created_at": 1700000000003, "is_example": false}, {"id": "p_005", "title": "Carpet Cleaned", "category": "Other", "status": "Done", "date": "2019-07-17", "cost": null, "contractor_id": "c_stanley-steamer", "notes": "Master Closet and Back Bedroom", "created_at": 1700000000004, "is_example": false}, {"id": "p_006", "title": "Install outlet in utility room", "category": "Electrical", "status": "Done", "date": "2019-07-18", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000005, "is_example": false}, {"id": "p_007", "title": "Replace 4 GFCI Outlets", "category": "Electrical", "status": "Done", "date": "2019-07-18", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000006, "is_example": false}, {"id": "p_008", "title": "Replace Smoke Detectors", "category": "Electrical", "status": "Done", "date": "2019-07-18", "cost": null, "contractor_id": "c_any-hour", "notes": "4/5 replaced--all but back bedroom", "created_at": 1700000000007, "is_example": false}, {"id": "p_009", "title": "Plumber to clear drain", "category": "Plumbing", "status": "Done", "date": "2019-07-19", "cost": null, "contractor_id": null, "notes": "Master bath left hand sink", "created_at": 1700000000008, "is_example": false}, {"id": "p_010", "title": "Utopia Fiber Installed", "category": "Other", "status": "Done", "date": "2019-07-23", "cost": null, "contractor_id": "c_utopia-fiber", "notes": "", "created_at": 1700000000009, "is_example": false}, {"id": "p_011", "title": "Dining Room Table delivered", "category": "Other", "status": "Done", "date": "2019-07-25", "cost": null, "contractor_id": "c_rc-willey", "notes": "", "created_at": 1700000000010, "is_example": false}, {"id": "p_012", "title": "Couch Delivered", "category": "Other", "status": "Done", "date": "2019-07-25", "cost": null, "contractor_id": "c_rc-willey", "notes": "", "created_at": 1700000000011, "is_example": false}, {"id": "p_013", "title": "Coffee Table Delivered", "category": "Other", "status": "Done", "date": "2019-07-25", "cost": null, "contractor_id": "c_rc-willey", "notes": "", "created_at": 1700000000012, "is_example": false}, {"id": "p_014", "title": "New TV Installed", "category": "Other", "status": "Done", "date": "2019-07-26", "cost": null, "contractor_id": "c_geek-squad", "notes": "", "created_at": 1700000000013, "is_example": false}, {"id": "p_015", "title": "HVAC Consultation", "category": "HVAC", "status": "Done", "date": "2019-07-27", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000014, "is_example": false}, {"id": "p_016", "title": "Nest Thermostat Installed", "category": "HVAC", "status": "Done", "date": "2019-08-03", "cost": null, "contractor_id": "c_geek-squad", "notes": "", "created_at": 1700000000015, "is_example": false}, {"id": "p_017", "title": "Nest Hello Doorbell Installed", "category": "Electrical", "status": "Done", "date": "2019-08-03", "cost": null, "contractor_id": "c_geek-squad", "notes": "", "created_at": 1700000000016, "is_example": false}, {"id": "p_018", "title": "Nest Protect Smoke/CO detectors Installed", "category": "Electrical", "status": "Done", "date": "2019-08-12", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000017, "is_example": false}, {"id": "p_019", "title": "Pre-Party Cleaning", "category": "Other", "status": "Done", "date": "2019-08-20", "cost": null, "contractor_id": "c_utah-maids", "notes": "", "created_at": 1700000000018, "is_example": false}, {"id": "p_020", "title": "Front of House lights changed to smart", "category": "Electrical", "status": "Done", "date": "2019-08-22", "cost": null, "contractor_id": null, "notes": "Completed personally.", "created_at": 1700000000019, "is_example": false}, {"id": "p_021", "title": "House Warming Party", "category": "Other", "status": "Done", "date": "2019-08-23", "cost": null, "contractor_id": null, "notes": "", "created_at": 1700000000020, "is_example": false}, {"id": "p_022", "title": "Garage Door sensors replaced", "category": "Exterior", "status": "Done", "date": "2019-09-09", "cost": null, "contractor_id": "c_garage-works", "notes": "", "created_at": 1700000000021, "is_example": false}, {"id": "p_023", "title": "New Washer and Dryer delivered", "category": "Other", "status": "Done", "date": "2019-09-11", "cost": null, "contractor_id": "c_rc-willey", "notes": "", "created_at": 1700000000022, "is_example": false}, {"id": "p_024", "title": "New Dryer Exhaust Installed", "category": "HVAC", "status": "Done", "date": "2019-09-13", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000023, "is_example": false}, {"id": "p_025", "title": "Concrete Side Yard", "category": "Landscaping & Yard", "status": "Done", "date": "2020-05-29", "cost": null, "contractor_id": "c_rjs-concrete", "notes": "", "created_at": 1700000000024, "is_example": false}, {"id": "p_026", "title": "Tub Drain Cleaned", "category": "Plumbing", "status": "Done", "date": "2020-06-04", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000025, "is_example": false}, {"id": "p_027", "title": "Hose Bibs Repaired", "category": "Plumbing", "status": "Done", "date": "2020-06-18", "cost": null, "contractor_id": "c_ibex-plumber", "notes": "", "created_at": 1700000000026, "is_example": false}, {"id": "p_028", "title": "Master Toilet Rebuild", "category": "Plumbing", "status": "Done", "date": "2020-06-18", "cost": null, "contractor_id": "c_ibex-plumber", "notes": "", "created_at": 1700000000027, "is_example": false}, {"id": "p_029", "title": "Paint Back Room", "category": "Painting", "status": "Done", "date": "2020-06-25", "cost": null, "contractor_id": null, "notes": "Completed by homeowner.", "created_at": 1700000000028, "is_example": false}, {"id": "p_030", "title": "Kitchen sink basket replaced", "category": "Kitchen", "status": "Done", "date": "2020-07-27", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000029, "is_example": false}, {"id": "p_031", "title": "Bedroom Paint", "category": "Painting", "status": "Done", "date": "2020-09-01", "cost": null, "contractor_id": "c_painter1", "notes": "", "created_at": 1700000000030, "is_example": false}, {"id": "p_032", "title": "Bookcases", "category": "Other", "status": "Done", "date": "2020-10-01", "cost": null, "contractor_id": "c_atwood-cabinets", "notes": "", "created_at": 1700000000031, "is_example": false}, {"id": "p_033", "title": "Master Bathroom Faucets", "category": "Bathroom", "status": "Done", "date": "2020-12-29", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000032, "is_example": false}, {"id": "p_034", "title": "Outlet #2 in utility room", "category": "Electrical", "status": "Done", "date": "2021-03-01", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000033, "is_example": false}, {"id": "p_035", "title": "Master Bathroom GFI outlet replaced", "category": "Electrical", "status": "Done", "date": "2021-03-01", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000034, "is_example": false}, {"id": "p_036", "title": "Whole Home Surge protector", "category": "Electrical", "status": "Done", "date": "2021-03-01", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000035, "is_example": false}, {"id": "p_037", "title": "Dishwasher replace", "category": "Kitchen", "status": "Done", "date": "2021-03-08", "cost": null, "contractor_id": "c_duerden-appliance", "notes": "", "created_at": 1700000000036, "is_example": false}, {"id": "p_038", "title": "New garage freezer", "category": "Other", "status": "Done", "date": "2021-06-10", "cost": null, "contractor_id": "c_rc-willey", "notes": "", "created_at": 1700000000037, "is_example": false}, {"id": "p_039", "title": "New outlet in Garage added", "category": "Electrical", "status": "Done", "date": "2021-06-10", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000038, "is_example": false}, {"id": "p_040", "title": "Gutter cleaning", "category": "Roofing", "status": "Done", "date": "2021-06-15", "cost": null, "contractor_id": "c_cutting-edge-window-service", "notes": "", "created_at": 1700000000039, "is_example": false}, {"id": "p_041", "title": "Window Cleaning", "category": "Exterior", "status": "Done", "date": "2021-06-15", "cost": null, "contractor_id": "c_cutting-edge-window-service", "notes": "", "created_at": 1700000000040, "is_example": false}, {"id": "p_042", "title": "Guest Bathroom Toilet tank rebuild", "category": "Bathroom", "status": "Done", "date": "2021-08-17", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000041, "is_example": false}, {"id": "p_043", "title": "Rain Gutter Repair", "category": "Roofing", "status": "Done", "date": "2022-10-01", "cost": null, "contractor_id": null, "notes": "", "created_at": 1700000000042, "is_example": false}, {"id": "p_044", "title": "Fireplace Repair (downstairs)", "category": "Structural", "status": "Done", "date": "2022-04-25", "cost": null, "contractor_id": "c_comfort-solutions", "notes": "", "created_at": 1700000000043, "is_example": false}, {"id": "p_045", "title": "Water Heater Expansion Tank", "category": "Plumbing", "status": "Done", "date": "2023-07-11", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000044, "is_example": false}, {"id": "p_046", "title": "Pressure Regulator Valve", "category": "Plumbing", "status": "Done", "date": "2023-07-11", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000045, "is_example": false}, {"id": "p_047", "title": "Downstairs bathroom faucet", "category": "Bathroom", "status": "Done", "date": "2023-07-11", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000046, "is_example": false}, {"id": "p_048", "title": "Tree trim for locust tree in back", "category": "Landscaping & Yard", "status": "Done", "date": "2023-08-01", "cost": null, "contractor_id": "c_hoa", "notes": "", "created_at": 1700000000047, "is_example": false}, {"id": "p_049", "title": "Outdoor outlet covers upgraded", "category": "Electrical", "status": "Done", "date": "2023-08-14", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000048, "is_example": false}, {"id": "p_050", "title": "North outdoor outlet replaced", "category": "Electrical", "status": "Done", "date": "2023-08-14", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000049, "is_example": false}, {"id": "p_051", "title": "New dining table", "category": "Other", "status": "Done", "date": "2023-08-15", "cost": null, "contractor_id": "c_sugarhouse-furniture", "notes": "", "created_at": 1700000000050, "is_example": false}, {"id": "p_052", "title": "Garage Door Seal Replaced", "category": "Exterior", "status": "Done", "date": "2023-09-01", "cost": null, "contractor_id": null, "notes": "", "created_at": 1700000000051, "is_example": false}, {"id": "p_053", "title": "Master bath left side p trap replaced", "category": "Plumbing", "status": "Done", "date": "2023-11-07", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000052, "is_example": false}, {"id": "p_054", "title": "Kitchen supply valves replaced", "category": "Plumbing", "status": "Done", "date": "2023-11-07", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000053, "is_example": false}, {"id": "p_055", "title": "Washer/Dryer service & cleaning", "category": "Other", "status": "Done", "date": "2023-10-26", "cost": null, "contractor_id": "c_sears", "notes": "", "created_at": 1700000000054, "is_example": false}, {"id": "p_056", "title": "Gutter cleaning", "category": "Roofing", "status": "Done", "date": "2023-08-14", "cost": null, "contractor_id": "c_cutting-edge-window-service", "notes": "", "created_at": 1700000000055, "is_example": false}, {"id": "p_057", "title": "Window Cleaning", "category": "Exterior", "status": "Done", "date": "2023-08-14", "cost": null, "contractor_id": "c_cutting-edge-window-service", "notes": "", "created_at": 1700000000056, "is_example": false}, {"id": "p_058", "title": "Exterior House Power Wash", "category": "Exterior", "status": "Done", "date": "2023-08-14", "cost": null, "contractor_id": "c_cutting-edge-window-service", "notes": "", "created_at": 1700000000057, "is_example": false}, {"id": "p_059", "title": "Water Heater Full Replacement", "category": "Plumbing", "status": "Done", "date": "2023-12-01", "cost": null, "contractor_id": "c_copper-peaks-plumbing", "notes": "", "created_at": 1700000000058, "is_example": false}, {"id": "p_060", "title": "Window Cleaning", "category": "Exterior", "status": "Done", "date": "2024-02-10", "cost": null, "contractor_id": "c_cutting-edge-window-service", "notes": "", "created_at": 1700000000059, "is_example": false}, {"id": "p_061", "title": "Window/Screen Full Replacement", "category": "Exterior", "status": "Done", "date": "2024-07-02", "cost": null, "contractor_id": "c_revival-windows", "notes": "", "created_at": 1700000000060, "is_example": false}, {"id": "p_062", "title": "Rain Gutters Full Replacement", "category": "Roofing", "status": "Done", "date": "2024-04-24", "cost": null, "contractor_id": "c_pro-quality-rain-gutters-llc", "notes": "", "created_at": 1700000000061, "is_example": false}, {"id": "p_063", "title": "Side Yard Leveled and Cemented", "category": "Landscaping & Yard", "status": "Done", "date": "2024-05-24", "cost": null, "contractor_id": "c_j-hope-dirt-works-demo-llc", "notes": "", "created_at": 1700000000062, "is_example": false}, {"id": "p_064", "title": "North Side Drain cleaned", "category": "Plumbing", "status": "Done", "date": "2024-05-03", "cost": null, "contractor_id": "c_electric-drain-sewer-rooter", "notes": "", "created_at": 1700000000063, "is_example": false}, {"id": "p_065", "title": "New Windows Install", "category": "Exterior", "status": "Done", "date": "2024-07-02", "cost": null, "contractor_id": "c_revival-windows", "notes": "", "created_at": 1700000000064, "is_example": false}, {"id": "p_066", "title": "Maid Cleaning", "category": "Other", "status": "Done", "date": "2024-07-10", "cost": null, "contractor_id": "c_utah-maids", "notes": "", "created_at": 1700000000065, "is_example": false}, {"id": "p_067", "title": "Kitchen Shutter removed", "category": "Kitchen", "status": "Done", "date": "2024-07-04", "cost": null, "contractor_id": "c_nate-and-kirsten", "notes": "", "created_at": 1700000000066, "is_example": false}, {"id": "p_068", "title": "Replacement Window Shutters (Primary Bed/Bath, Office, Blue Room)", "category": "Exterior", "status": "Done", "date": "2024-08-29", "cost": null, "contractor_id": "c_stanfield-shutters", "notes": "", "created_at": 1700000000067, "is_example": false}, {"id": "p_069", "title": "Garage Wall Racks", "category": "Other", "status": "Done", "date": "2024-07-31", "cost": null, "contractor_id": "c_saferacks", "notes": "", "created_at": 1700000000068, "is_example": false}, {"id": "p_070", "title": "Pest control/rodent abatement", "category": "Other", "status": "Done", "date": "2024-07-10", "cost": null, "contractor_id": "c_thorn-pest-control", "notes": "Ongoing", "created_at": 1700000000069, "is_example": false}, {"id": "p_071", "title": "Garage Rack Installation", "category": "Other", "status": "Done", "date": "2024-07-31", "cost": null, "contractor_id": null, "notes": "", "created_at": 1700000000070, "is_example": false}, {"id": "p_072", "title": "Fireplace Repair (downstairs)", "category": "Structural", "status": "Done", "date": "2024-08-16", "cost": null, "contractor_id": "c_comfort-solutions", "notes": "", "created_at": 1700000000071, "is_example": false}, {"id": "p_073", "title": "Window Cleaning", "category": "Exterior", "status": "Done", "date": "2024-08-09", "cost": null, "contractor_id": "c_cutting-edge-window-service", "notes": "", "created_at": 1700000000072, "is_example": false}, {"id": "p_074", "title": "Replace Lock/Doorknob on Garage Door", "category": "Exterior", "status": "Done", "date": "2025-01-10", "cost": null, "contractor_id": "c_glen-s-keys", "notes": "", "created_at": 1700000000073, "is_example": false}, {"id": "p_075", "title": "Tree trim for locust tree and pear trees in back", "category": "Landscaping & Yard", "status": "Done", "date": "2025-06-05", "cost": null, "contractor_id": "c_high-climbers", "notes": "", "created_at": 1700000000074, "is_example": false}, {"id": "p_076", "title": "Crawl Space Door", "category": "Structural", "status": "Done", "date": "2026-07-14", "cost": null, "contractor_id": "c_maple-leaf-construction", "notes": "", "created_at": 1700000000075, "is_example": false}, {"id": "p_077", "title": "Primary Closet Light", "category": "Electrical", "status": "Done", "date": "2026-07-14", "cost": null, "contractor_id": "c_any-hour", "notes": "", "created_at": 1700000000076, "is_example": false}, {"id": "p_078", "title": "Sprinkler Box Fix", "category": "Landscaping & Yard", "status": "Done", "date": "2026-09-23", "cost": null, "contractor_id": "c_bob-kiholm", "notes": "", "created_at": 1700000000077, "is_example": false}], "maintenance": []};
+  var TABLES = ["contacts","projects","maintenance"];
+  var REQUIRED = {contacts:"name", projects:"title", maintenance:"name"};
+
+  function clone(x){ return JSON.parse(JSON.stringify(x)); }
+  function valid(d){
+    return d && TABLES.every(function(t){ return Array.isArray(d[t]); });
+  }
+  var STARTER = [
+    ["Test GFCI outlets","Electrical",1,"Press TEST then RESET on each GFCI outlet."],
+    ["Run water in rarely used drains","Plumbing",1,"Keeps the traps from drying out."],
+    ["Clean dishwasher filter","Appliances",3,"Then run a cleaning cycle."],
+    ["Clean range hood filter","Appliances",3,""],
+    ["Clean gutters","Roof & Gutters",6,"Spring and fall. Locust and pear trees drop a lot.",null],
+    ["Test smoke & CO detectors","Safety (Smoke/CO)",6,"Nest Protect units were installed Aug 2019 and are rated about 10 years; plan to replace around 2029."],
+    ["Garage door safety test & lubrication","Exterior",6,"Check the auto-reverse, lubricate rollers and hinges."],
+    ["Vacuum refrigerator coils","Appliances",6,""],
+    ["Furnace annual service","Furnace / HVAC",12,"Best done in early fall.","c_comfort-solutions"],
+    ["A/C tune-up","Furnace / HVAC",12,"Best done in spring.","c_comfort-solutions"],
+    ["Winterize sprinklers & hose bibs","Exterior",12,"Sprinkler blowout and drain hose bibs before the first hard freeze (mid-Oct to early Nov)."],
+    ["Flush water heater","Water Heater",12,"Drain a few gallons to clear sediment."],
+    ["Clean dryer vent","Appliances",12,"Fire risk if lint builds up."],
+    ["Inspect crawl space","Structural",12,"Look for moisture, pests, and check the door seal."],
+    ["Exercise water shutoff valves","Plumbing",12,"Main shutoff plus the ones under sinks and toilets."],
+    ["Check caulk & weatherstripping","Exterior",12,"Windows, doors, tubs."],
+    ["Roof inspection","Roof & Gutters",12,"From the ground, or by a roofer, especially after wind or hail."],
+    ["Check fire extinguishers","Safety (Smoke/CO)",12,"Check the gauge and expiration date."],
+    ["Radon test","Safety (Smoke/CO)",24,"Utah has high radon levels."],
+    ["Tree trimming","Exterior",24,"Locust and pear trees in back.","c_high-climbers"],
+    ["Water heater anode rod inspection","Water Heater",60,"Extends the life of the tank."],
+    ["Re-seal side yard concrete","Exterior",60,"Optional."]
+  ];
+  // ---------- talking to the server ----------
+  var API = "/api/data";
+  var PWKEY = "murrayManorHouseLog.password";
+  var cache = null, cacheAt = 0, lastEtag = null, inflight = null;
+  var listeners = [];
+
+  function getPw(force){
+    var pw = null;
+    try{ pw = localStorage.getItem(PWKEY); }catch(e){}
+    if(force || !pw){
+      pw = window.prompt(force ? "That password didn't work. Enter the House Log password:" : "Enter the House Log password:");
+      if(pw){ try{ localStorage.setItem(PWKEY, pw); }catch(e){} }
+    }
+    return pw || "";
+  }
+
+  function call(method, body, retried){
+    var opts = {method:method, headers:{"x-house-key": getPw(false)}, cache:"no-store"};
+    if(body){ opts.headers["content-type"] = "application/json"; opts.body = JSON.stringify(body); }
+    return fetch(API, opts).then(function(r){
+      if(r.status === 401 && !retried){
+        try{ localStorage.removeItem(PWKEY); }catch(e){}
+        return call(method, body, true);
+      }
+      return r.json().catch(function(){ return {}; }).then(function(j){
+        if(!r.ok) throw new Error(j.error || ("Server error " + r.status));
+        return j;
+      });
+    });
+  }
+
+  function withStarter(d){
+    var haveC = {}; d.contacts.forEach(function(c){ haveC[c.id] = 1; });
+    var have = {}; d.maintenance.forEach(function(m){ have[String(m.name||"").toLowerCase()] = 1; });
+    var t = Date.now();
+    STARTER.forEach(function(s, i){
+      if(have[s[0].toLowerCase()]) return;
+      d.maintenance.push({
+        id:"m_starter_" + (i + 1), name:s[0], category:s[1], interval_months:s[2], last_done:null,
+        contact_id:(s[4] && haveC[s[4]]) ? s[4] : null, notes:s[3] || "", is_example:false, created_at:t + i
+      });
+    });
+    return d;
+  }
+
+  // Whole database, shared for a moment so three table reads cost one request.
+  function fetchDb(fresh){
+    if(!fresh && cache && Date.now() - cacheAt < 800) return Promise.resolve(cache);
+    if(inflight) return inflight;
+    inflight = call("GET").then(function(j){
+      if(j.empty){
+        // First run on the server: start from the original data.
+        var seed = withStarter(clone(SEED));
+        return call("POST", {op:"init", payload:seed}).then(function(){ return call("GET"); });
+      }
+      return j;
+    }).then(function(j){
+      cache = j.data; cacheAt = Date.now(); lastEtag = j.etag; inflight = null;
+      return cache;
+    }, function(e){ inflight = null; throw e; });
+    return inflight;
+  }
+
+  function Query(t){ this.t = t; this.op = "select"; this.payload = null; this.f = null; }
+  Query.prototype.select = function(){ this.op = "select"; return this; };
+  Query.prototype.insert = function(p){ this.op = "insert"; this.payload = p; return this; };
+  Query.prototype.update = function(p){ this.op = "update"; this.payload = p; return this; };
+  Query.prototype["delete"] = function(){ this.op = "delete"; return this; };
+  Query.prototype.eq = function(col, val){ this.f = [col, val]; return this; };
+  Query.prototype.then = function(ok, bad){
+    var self = this;
+    return self.run().then(ok, bad);
+  };
+  Query.prototype.run = function(){
+    var t = this.t, self = this;
+    if(TABLES.indexOf(t) < 0) return Promise.resolve({data:null, error:{message:"Unknown table " + t}});
+    if(this.op === "select"){
+      return fetchDb(false).then(function(d){ return {data:clone(d[t]), error:null}; },
+                                 function(e){ return {data:null, error:{message:e.message}}; });
+    }
+    cache = null;                           // next read must see this change
+    return call("POST", {op:this.op, table:t, payload:this.payload, filter:this.f})
+      .then(function(){ cache = null; return {data:null, error:null}; },
+            function(e){ return {data:null, error:{message:e.message}}; });
+  };
+
+  window.supabase = {
+    createClient: function(){
+      return {
+        from: function(t){ return new Query(t); },
+        // Stands in for realtime: check for other people's changes every 20 seconds.
+        channel: function(){
+          var c = {
+            on: function(ev, filter, cb){ if(cb) listeners.push(cb); return c; },
+            subscribe: function(cb){
+              setTimeout(function(){ cb("SUBSCRIBED"); }, 0);
+              function poll(){
+                if(document.hidden) return;
+                call("GET").then(function(j){
+                  if(j.etag && lastEtag && j.etag !== lastEtag){
+                    lastEtag = j.etag; cache = null;
+                    listeners.forEach(function(f){ f(); });
+                  }
+                }).catch(function(){});
+              }
+              setInterval(poll, 20000);
+              document.addEventListener("visibilitychange", function(){ if(!document.hidden) poll(); });
+              return c;
+            }
+          };
+          return c;
+        }
+      };
+    }
+  };
+
+  // ---------- backup / restore ----------
+  function pad(n){ return n < 10 ? "0" + n : "" + n; }
+  function exportBackup(){
+    fetchDb(true).then(function(d){
+      var now = new Date();
+      var name = "murray-manor-backup-" + now.getFullYear() + "-" + pad(now.getMonth()+1) + "-" + pad(now.getDate()) + ".json";
+      var blob = new Blob([JSON.stringify(d, null, 2)], {type:"application/json"});
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    }).catch(function(e){ alert("Couldn't download the backup: " + e.message); });
+  }
+  function importBackup(file){
+    var rd = new FileReader();
+    rd.onload = function(){
+      var d;
+      try{ d = JSON.parse(rd.result); }catch(e){ alert("That file isn't a valid backup."); return; }
+      if(!valid(d)){ alert("That file doesn't look like a House Log backup."); return; }
+      var msg = "Replace everything in the House Log with this backup?\n\n" +
+        d.projects.length + " projects, " + d.contacts.length + " contacts, " + d.maintenance.length + " upkeep items.";
+      if(!confirm(msg)) return;
+      call("POST", {op:"replace", payload:d}).then(function(){ location.reload(); },
+        function(e){ alert("Couldn't restore: " + e.message); });
+    };
+    rd.readAsText(file);
+  }
+
+  var dot = document.getElementById("connDot");
+  if(dot){
+    dot.title = "Shared online";
+    var wrap = document.createElement("div");
+    wrap.style.cssText = "display:flex;align-items:center;gap:10px;";
+    dot.parentNode.insertBefore(wrap, dot);
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.textContent = "Backup";
+    btn.style.cssText = "border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;";
+    var inp = document.createElement("input");
+    inp.type = "file"; inp.accept = ".json,application/json"; inp.hidden = true;
+    inp.addEventListener("change", function(){ if(inp.files[0]) importBackup(inp.files[0]); inp.value = ""; });
+    var menu = document.createElement("div");
+    menu.style.cssText = "display:none;position:absolute;right:16px;top:52px;z-index:25;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:var(--shadow);flex-direction:column;gap:4px;min-width:170px;";
+    function setMenu(open){ menu.style.display = open ? "flex" : "none"; }
+    function item(label, fn){
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = label;
+      b.style.cssText = "border:none;background:none;color:var(--ink);text-align:left;padding:9px 10px;border-radius:8px;font-size:13.5px;cursor:pointer;";
+      b.addEventListener("click", function(){ setMenu(false); fn(); });
+      return b;
+    }
+    menu.appendChild(item("Download backup", exportBackup));
+    menu.appendChild(item("Restore from backup…", function(){ inp.click(); }));
+    btn.addEventListener("click", function(e){ e.stopPropagation(); setMenu(menu.style.display === "none"); });
+    document.addEventListener("click", function(){ setMenu(false); });
+    wrap.appendChild(btn); wrap.appendChild(dot); wrap.appendChild(inp);
+    document.body.appendChild(menu);
+  }
+})();
+</script>
+<script>
+(function(){
+  "use strict";
+
+  // Data now lives on the server (see the database script above).
+  // These two values are placeholders so the rest of the code works unchanged.
+  var SUPABASE_URL = "local";
+  var SUPABASE_ANON_KEY = "local";
+
+  var PROJECT_CATS = ["Kitchen","Bathroom","Exterior","Roofing","Electrical","Plumbing","HVAC","Flooring","Landscaping & Yard","Painting","Structural","Other"];
+  var TRADES = ["General Contractor","Plumber","Electrician","HVAC Technician","Roofer","Landscaper","Handyman","Appliance Repair","Painter","Pest Control","Other"];
+  var MAINT_CATS = ["Furnace / HVAC","Water Heater","Roof & Gutters","Appliances","Plumbing","Electrical","Exterior","Safety (Smoke/CO)","Other"];
+  var INTERVALS = [
+    {label:"Monthly", months:1},
+    {label:"Every 3 months", months:3},
+    {label:"Every 6 months", months:6},
+    {label:"Yearly", months:12},
+    {label:"Every 2 years", months:24},
+    {label:"Every 5 years", months:60}
+  ];
+  var PROJECT_STATUSES = ["Planned","In Progress","Done"];
+
+  var sb = null, dbFailed = false, dbErrorDetail = "", configured = false;
+  var projects = [], contacts = [], maintenance = [];
+  var loaded = {projects:false, contacts:false, maintenance:false};
+  var activeTab = "dashboard";
+  var searchTerm = "";
+  var projectFilter = "All";
+
+  function $(sel, root){ return (root||document).querySelector(sel); }
+  function $all(sel, root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+  function esc(s){
+    s = (s===undefined||s===null) ? "" : String(s);
+    return s.replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function uid(){ return Math.random().toString(36).slice(2,10); }
+
+  try {
+    var savedTab = localStorage.getItem("houselog_tab");
+    if (savedTab) activeTab = savedTab;
+  } catch(e){}
+
+  // ---------- date helpers ----------
+  function todayISO(){
+    var d = new Date();
+    return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+  }
+  function pad(n){ return n<10 ? "0"+n : ""+n; }
+  function parseISO(s){
+    if(!s) return null;
+    var parts = s.split("-");
+    if(parts.length!==3) return null;
+    return new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, parseInt(parts[2],10));
+  }
+  function addMonthsISO(iso, months){
+    var d = parseISO(iso);
+    if(!d) return null;
+    var nd = new Date(d.getFullYear(), d.getMonth()+months, d.getDate());
+    return nd.getFullYear() + "-" + pad(nd.getMonth()+1) + "-" + pad(nd.getDate());
+  }
+  function fmtDate(iso){
+    var d = parseISO(iso);
+    if(!d) return "—";
+    return d.toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"});
+  }
+  function daysBetween(aISO, bISO){
+    var a = parseISO(aISO), b = parseISO(bISO);
+    if(!a||!b) return null;
+    return Math.round((b-a)/86400000);
+  }
+
+  function maintStatus(item){
+    if(!item.lastDone){
+      return {status:"neutral", label:"Not tracked", nextDue:null};
+    }
+    var nextDue = addMonthsISO(item.lastDone, item.intervalMonths||12);
+    var today = todayISO();
+    var diff = daysBetween(today, nextDue);
+    if(diff < 0) return {status:"bad", label:"Overdue", nextDue:nextDue};
+    if(diff <= 30) return {status:"warn", label:"Due soon", nextDue:nextDue};
+    return {status:"good", label:"On track", nextDue:nextDue};
+  }
+
+  function costFmt(n){
+    if(n===undefined||n===null||n==="" || isNaN(n)) return null;
+    return "$" + Number(n).toLocaleString(undefined,{maximumFractionDigits:0});
+  }
+
+  function contactName(id){
+    var c = contacts.filter(function(x){return x.id===id;})[0];
+    return c ? c.name : null;
+  }
+
+  // ---------- toast ----------
+  var toastTimer = null;
+  function toast(msg){
+    var el = $("#toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove("show"); }, 2400);
+  }
+
+  // ---------- row <-> app mapping ----------
+  function rowToProject(r){
+    return {
+      id:r.id, title:r.title, category:r.category, status:r.status,
+      date:r.date, cost:r.cost, contractorId:r.contractor_id, notes:r.notes,
+      isExample:!!r.is_example, createdAt:r.created_at
+    };
+  }
+  function rowToContact(r){
+    return {
+      id:r.id, name:r.name, company:r.company, trade:r.trade, phone:r.phone,
+      email:r.email, notes:r.notes, isExample:!!r.is_example, createdAt:r.created_at
+    };
+  }
+  function rowToMaint(r){
+    return {
+      id:r.id, name:r.name, category:r.category, intervalMonths:r.interval_months,
+      lastDone:r.last_done, contactId:r.contact_id, notes:r.notes,
+      isExample:!!r.is_example, createdAt:r.created_at
+    };
+  }
+  function projectToRow(p){
+    return {
+      title:p.title, category:p.category, status:p.status, date:p.date || null,
+      cost:(p.cost===undefined||p.cost===null||p.cost==="") ? null : Number(p.cost),
+      contractor_id:p.contractorId || null, notes:p.notes||"",
+      is_example: !!p.isExample
+    };
+  }
+  function contactToRow(c){
+    return {
+      name:c.name, company:c.company||"", trade:c.trade||"", phone:c.phone||"",
+      email:c.email||"", notes:c.notes||"", is_example: !!c.isExample
+    };
+  }
+  function maintToRow(m){
+    return {
+      name:m.name, category:m.category||"Other", interval_months:Number(m.intervalMonths)||12,
+      last_done:m.lastDone || null, contact_id:m.contactId || null, notes:m.notes||"",
+      is_example: !!m.isExample
+    };
+  }
+
+  // ---------- db wiring ----------
+  function setConnDot(state){
+    var dot = $("#connDot");
+    if(!dot) return;
+    dot.className = "conn-dot" + (state==="ok" ? " ok" : state==="bad" ? " bad" : "");
+  }
+
+  function initDb(){
+    if(!SUPABASE_URL || SUPABASE_URL.indexOf("YOUR_SUPABASE") === 0 ||
+       !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.indexOf("YOUR_SUPABASE") === 0){
+      configured = false;
+      renderAll();
+      return;
+    }
+    configured = true;
+    if(!window.supabase || !window.supabase.createClient){
+      dbFailed = true;
+      dbErrorDetail = "The Supabase library didn't load — check your internet connection and reload.";
+      setConnDot("bad");
+      renderAll();
+      return;
+    }
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    fetchAll(true);
+
+    sb.channel("house-log-changes")
+      .on("postgres_changes", {event:"*", schema:"public", table:"projects"}, function(){ fetchOne("projects"); })
+      .on("postgres_changes", {event:"*", schema:"public", table:"contacts"}, function(){ fetchOne("contacts"); })
+      .on("postgres_changes", {event:"*", schema:"public", table:"maintenance"}, function(){ fetchOne("maintenance"); })
+      .subscribe(function(status){
+        if(status === "SUBSCRIBED") setConnDot("ok");
+        else if(status === "CHANNEL_ERROR" || status === "TIMED_OUT") setConnDot("bad");
+      });
+  }
+
+  function fetchOne(name){
+    var table = sb.from(name).select("*");
+    table.then(function(res){
+      if(res.error){
+        dbFailed = true;
+        dbErrorDetail = res.error.message || "";
+        setConnDot("bad");
+        renderAll();
+        return;
+      }
+      dbFailed = false;
+      if(name==="projects") projects = res.data.map(rowToProject);
+      if(name==="contacts") contacts = res.data.map(rowToContact);
+      if(name==="maintenance") maintenance = res.data.map(rowToMaint);
+      setConnDot("ok");
+      renderAll();
+    });
+  }
+
+  function fetchAll(first){
+    Promise.all([
+      sb.from("projects").select("*"),
+      sb.from("contacts").select("*"),
+      sb.from("maintenance").select("*")
+    ]).then(function(results){
+      var errored = results.filter(function(r){ return r.error; });
+      if(errored.length){
+        dbFailed = true;
+        dbErrorDetail = errored[0].error.message || "";
+        setConnDot("bad");
+        loaded.projects = loaded.contacts = loaded.maintenance = true;
+        renderAll();
+        return;
+      }
+      dbFailed = false;
+      projects = results[0].data.map(rowToProject);
+      contacts = results[1].data.map(rowToContact);
+      maintenance = results[2].data.map(rowToMaint);
+      loaded.projects = loaded.contacts = loaded.maintenance = true;
+      setConnDot("ok");
+      renderAll();
+    }).catch(function(err){
+      dbFailed = true;
+      dbErrorDetail = (err && err.message) ? err.message : "Couldn't reach the database.";
+      setConnDot("bad");
+      loaded.projects = loaded.contacts = loaded.maintenance = true;
+      renderAll();
+    });
+  }
+
+  function clearExamples(){
+    var toDelete = [].concat(
+      projects.filter(function(x){return x.isExample;}).map(function(x){return {t:"projects", id:x.id};}),
+      contacts.filter(function(x){return x.isExample;}).map(function(x){return {t:"contacts", id:x.id};}),
+      maintenance.filter(function(x){return x.isExample;}).map(function(x){return {t:"maintenance", id:x.id};})
+    );
+    Promise.all(toDelete.map(function(d){ return sb.from(d.t).delete().eq("id", d.id); }))
+      .then(function(){ toast("Example data cleared"); fetchAll(); });
+  }
+
+  function hasExamples(){
+    return [].concat(projects, contacts, maintenance).some(function(x){ return x.isExample; });
+  }
+
+  function renderBanners(main){
+    if(!configured){
+      var cb = document.createElement("div");
+      cb.className = "error-banner";
+      cb.innerHTML = "This page isn't connected to a database yet. Open <span class=\"mono\">index.html</span> and fill in <span class=\"mono\">SUPABASE_URL</span> and <span class=\"mono\">SUPABASE_ANON_KEY</span> near the top of the script, then reload.";
+      main.appendChild(cb);
+      return;
+    }
+    if(dbFailed){
+      var eb = document.createElement("div");
+      eb.className = "error-banner";
+      eb.innerHTML = "This page couldn't reach the house data — you're seeing an empty or stale view, not a wiped one. Try reloading the page." +
+        (dbErrorDetail ? '<div class="mono" style="margin-top:6px;font-size:10.5px;opacity:.8;">'+esc(dbErrorDetail)+'</div>' : '') +
+        '<button id="reloadBtn" type="button">Reload</button>';
+      main.appendChild(eb);
+      var rb = $("#reloadBtn", eb);
+      if(rb) rb.addEventListener("click", function(){ location.reload(); });
+    }
+  }
+
+  // ---------- nav ----------
+  $all("nav.bottom button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      activeTab = btn.getAttribute("data-tab");
+      searchTerm = "";
+      try{ localStorage.setItem("houselog_tab", activeTab); }catch(e){}
+      renderAll();
+    });
+  });
+
+  $("#fab").addEventListener("click", function(){
+    if(activeTab==="dashboard"){ openForm("project", null); return; }
+    if(activeTab==="projects"){ openForm("project", null); return; }
+    if(activeTab==="contacts"){ openForm("contact", null); return; }
+    if(activeTab==="maintenance"){ openForm("maintenance", null); return; }
+  });
+
+  $("#searchInput").addEventListener("input", function(e){
+    searchTerm = e.target.value.toLowerCase();
+    renderList();
+  });
+
+  // ---------- render root ----------
+  function renderAll(){
+    $all("nav.bottom button").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-tab")===activeTab);
+    });
+    $("#fab").style.display = "flex";
+    $("#searchRow").hidden = (activeTab==="dashboard");
+    if($("#searchInput").value !== searchTerm) $("#searchInput").value = searchTerm;
+
+    var main = $("#main");
+    main.innerHTML = "";
+
+    if(activeTab==="dashboard") renderDashboard(main);
+    else renderList(main);
+  }
+
+  function renderDashboard(main){
+    main = main || $("#main");
+    renderBanners(main);
+    var overdue = maintenance.map(function(m){ return Object.assign({}, m, {_status: maintStatus(m)}); })
+      .filter(function(m){ return m._status.status==="bad" || m._status.status==="warn"; })
+      .sort(function(a,b){ return (a._status.nextDue||"") < (b._status.nextDue||"") ? -1 : 1; });
+
+    var recentProjects = projects.slice().sort(function(a,b){
+      return (b.date||"") < (a.date||"") ? -1 : ((b.date||"")>(a.date||"") ? 1 : (b.createdAt||0)-(a.createdAt||0));
+    }).slice(0,5);
+
+    var html = "";
+    html += '<div class="stat-row">'+
+      '<div class="stat-tile"><div class="n">'+projects.length+'</div><div class="l">Projects</div></div>'+
+      '<div class="stat-tile"><div class="n">'+contacts.length+'</div><div class="l">Contacts</div></div>'+
+      '<div class="stat-tile"><div class="n">'+overdue.length+'</div><div class="l">Need attention</div></div>'+
+    '</div>';
+
+    html += '<section class="block"><h2>Needs attention</h2>';
+    if(overdue.length===0){
+      html += '<div class="empty" style="padding:22px 12px;"><p>Nothing due soon. Nice work.</p></div>';
+    } else {
+      overdue.slice(0,8).forEach(function(m){
+        html += attnRowHtml(m);
+      });
+    }
+    html += '</section>';
+
+    html += '<section class="block"><h2>Recent projects</h2>';
+    if(recentProjects.length===0){
+      html += '<div class="empty" style="padding:22px 12px;"><p>No projects logged yet. Tap + to add your first one.</p></div>';
+    } else {
+      recentProjects.forEach(function(p){ html += projectCardHtml(p); });
+    }
+    html += '</section>';
+
+    if(hasExamples()){
+      html += '<div class="clear-examples">Sample entries are marked <span class="tag example" style="vertical-align:1px;">Example</span> — <button id="clearExBtn">clear them</button> once you\'ve added your own.</div>';
+    }
+
+    main.insertAdjacentHTML("beforeend", html);
+    bindCardClicks(main);
+    var ceb = $("#clearExBtn", main);
+    if(ceb) ceb.addEventListener("click", clearExamples);
+    $all(".mark-done-btn", main).forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        markDone(btn.getAttribute("data-id"));
+      });
+    });
+  }
+
+  function attnRowHtml(m){
+    var st = m._status || maintStatus(m);
+    return '<div class="attn-row" data-open="maintenance" data-id="'+esc(m.id)+'">'+
+      '<div class="attn-stripe status-'+st.status+'"></div>'+
+      '<div class="attn-body">'+
+        '<div class="attn-title">'+esc(m.name)+(m.isExample?' <span class="tag example">Example</span>':'')+'</div>'+
+        '<div class="attn-due">'+(st.nextDue ? (st.status==="bad"?"Was due ":"Due ")+fmtDate(st.nextDue) : "Set a last-done date")+'</div>'+
+      '</div>'+
+      '<button class="btn-mini mark-done-btn" data-id="'+esc(m.id)+'">Mark done</button>'+
+    '</div>';
+  }
+
+  function projectCardHtml(p){
+    var cn = p.contractorId ? contactName(p.contractorId) : null;
+    var statusClass = p.status==="Done" ? "status-good" : (p.status==="In Progress" ? "status-warn" : "status-neutral");
+    var cost = costFmt(p.cost);
+    return '<div class="card" data-open="project" data-id="'+esc(p.id)+'">'+
+      '<div class="card-top">'+
+        '<div class="card-title">'+esc(p.title)+'</div>'+
+        (cost ? '<div class="cost">'+cost+'</div>' : '')+
+      '</div>'+
+      '<div class="card-sub">'+fmtDate(p.date)+(cn ? " · "+esc(cn) : "")+'</div>'+
+      '<div class="card-meta">'+
+        '<span class="tag cat">'+esc(p.category||"Other")+'</span>'+
+        '<span class="tag '+statusClass+'">'+esc(p.status||"Planned")+'</span>'+
+        (p.isExample ? '<span class="tag example">Example</span>' : '')+
+      '</div>'+
+    '</div>';
+  }
+
+  function contactCardHtml(c){
+    var n = projects.filter(function(p){ return p.contractorId===c.id; }).length;
+    return '<div class="card" data-open="contact" data-id="'+esc(c.id)+'">'+
+      '<div class="card-top"><div class="card-title">'+esc(c.name)+'</div></div>'+
+      '<div class="card-sub">'+(c.company ? esc(c.company)+" · " : "")+esc(c.phone||"")+'</div>'+
+      '<div class="card-meta">'+
+        '<span class="tag cat">'+esc(c.trade||"Other")+'</span>'+
+        (n>0 ? '<span class="tag status-neutral">'+n+' project'+(n===1?"":"s")+'</span>' : '')+
+        (c.isExample ? '<span class="tag example">Example</span>' : '')+
+      '</div>'+
+    '</div>';
+  }
+
+  function maintCardHtml(m){
+    var st = maintStatus(m);
+    var cn = m.contactId ? contactName(m.contactId) : null;
+    return '<div class="card" data-open="maintenance" data-id="'+esc(m.id)+'">'+
+      '<div class="card-top"><div class="card-title">'+esc(m.name)+'</div></div>'+
+      '<div class="card-sub">'+(m.lastDone ? "Last done "+fmtDate(m.lastDone) : "Not tracked yet")+(cn?" · "+esc(cn):"")+'</div>'+
+      '<div class="card-meta">'+
+        '<span class="tag cat">'+esc(m.category||"Other")+'</span>'+
+        '<span class="tag status-'+st.status+'">'+st.label+(st.nextDue?" · "+fmtDate(st.nextDue):"")+'</span>'+
+        (m.isExample ? '<span class="tag example">Example</span>' : '')+
+      '</div>'+
+    '</div>';
+  }
+
+  function bindCardClicks(root){
+    $all("[data-open]", root).forEach(function(el){
+      el.addEventListener("click", function(){
+        var type = el.getAttribute("data-open");
+        var id = el.getAttribute("data-id");
+        openDetail(type, id);
+      });
+    });
+  }
+
+  function markDone(id){
+    var m = maintenance.filter(function(x){return x.id===id;})[0];
+    if(!m || !sb) return;
+    sb.from("maintenance").update({last_done: todayISO()}).eq("id", id).then(function(res){
+      if(res.error){ toast("Couldn't save: "+res.error.message); return; }
+      toast("Marked done today");
+      fetchOne("maintenance");
+    });
+  }
+
+  // ---------- list views ----------
+  function renderList(main){
+    main = main || $("#main");
+    main.innerHTML = "";
+    renderBanners(main);
+
+    if(activeTab==="projects") renderProjects(main);
+    else if(activeTab==="contacts") renderContacts(main);
+    else if(activeTab==="maintenance") renderMaintenance(main);
+  }
+
+  function renderProjects(main){
+    var chips = ["All"].concat(PROJECT_STATUSES);
+    var chipsHtml = '<div class="filter-chips">'+chips.map(function(c){
+      return '<button class="chip'+(projectFilter===c?" active":"")+'" data-filter="'+esc(c)+'">'+esc(c)+'</button>';
+    }).join("")+'</div>';
+
+    var list = projects.filter(function(p){
+      if(projectFilter!=="All" && p.status!==projectFilter) return false;
+      if(!searchTerm) return true;
+      var cn = (p.contractorId ? contactName(p.contractorId) : "") || "";
+      return (p.title||"").toLowerCase().indexOf(searchTerm)>-1 ||
+             (p.category||"").toLowerCase().indexOf(searchTerm)>-1 ||
+             cn.toLowerCase().indexOf(searchTerm)>-1 ||
+             (p.notes||"").toLowerCase().indexOf(searchTerm)>-1;
+    }).sort(function(a,b){
+      return (b.date||"") < (a.date||"") ? -1 : ((b.date||"")>(a.date||"") ? 1 : 0);
+    });
+
+    var html = chipsHtml;
+    if(list.length===0){
+      html += '<div class="empty"><h3>No projects yet</h3><p>Tap the + button to log your first house project.</p></div>';
+    } else {
+      list.forEach(function(p){ html += projectCardHtml(p); });
+    }
+    main.insertAdjacentHTML("beforeend", html);
+    bindCardClicks(main);
+    $all(".chip", main).forEach(function(chip){
+      chip.addEventListener("click", function(){
+        projectFilter = chip.getAttribute("data-filter");
+        renderList();
+      });
+    });
+  }
+
+  function renderContacts(main){
+    var list = contacts.filter(function(c){
+      if(!searchTerm) return true;
+      return (c.name||"").toLowerCase().indexOf(searchTerm)>-1 ||
+             (c.company||"").toLowerCase().indexOf(searchTerm)>-1 ||
+             (c.trade||"").toLowerCase().indexOf(searchTerm)>-1;
+    }).sort(function(a,b){ return (a.name||"").localeCompare(b.name||""); });
+
+    var html = "";
+    if(list.length===0){
+      html += '<div class="empty"><h3>No contacts yet</h3><p>Add the contractors and companies you rely on for the house.</p></div>';
+    } else {
+      list.forEach(function(c){ html += contactCardHtml(c); });
+    }
+    main.insertAdjacentHTML("beforeend", html);
+    bindCardClicks(main);
+  }
+
+  function renderMaintenance(main){
+    var list = maintenance.map(function(m){ return Object.assign({}, m, {_status: maintStatus(m)}); });
+    if(searchTerm){
+      list = list.filter(function(m){
+        return (m.name||"").toLowerCase().indexOf(searchTerm)>-1 ||
+               (m.category||"").toLowerCase().indexOf(searchTerm)>-1;
+      });
+    }
+    var order = {bad:0, warn:1, neutral:2, good:3};
+    list.sort(function(a,b){
+      var oa = order[a._status.status], ob = order[b._status.status];
+      if(oa!==ob) return oa-ob;
+      return (a._status.nextDue||"9999") < (b._status.nextDue||"9999") ? -1 : 1;
+    });
+
+    var html = "";
+    if(list.length===0){
+      html += '<div class="empty"><h3>Nothing to track yet</h3><p>Add filters, tune-ups, and anything else on a schedule.</p></div>';
+    } else {
+      list.forEach(function(m){ html += maintCardHtml(m); });
+    }
+    main.insertAdjacentHTML("beforeend", html);
+    bindCardClicks(main);
+  }
+
+  // ---------- detail sheets ----------
+  function openDetail(type, id){
+    var item;
+    if(type==="project") item = projects.filter(function(x){return x.id===id;})[0];
+    if(type==="contact") item = contacts.filter(function(x){return x.id===id;})[0];
+    if(type==="maintenance") item = maintenance.filter(function(x){return x.id===id;})[0];
+    if(!item) return;
+
+    var body = "";
+    var title = "";
+    if(type==="project"){
+      title = item.title;
+      var cn = item.contractorId ? contactName(item.contractorId) : null;
+      body += '<div class="detail-section">'+
+        '<div class="kv-row"><span class="k">Category</span><span class="v">'+esc(item.category||"—")+'</span></div>'+
+        '<div class="kv-row"><span class="k">Status</span><span class="v">'+esc(item.status||"—")+'</span></div>'+
+        '<div class="kv-row"><span class="k">Date</span><span class="v">'+fmtDate(item.date)+'</span></div>'+
+        '<div class="kv-row"><span class="k">Cost</span><span class="v">'+(costFmt(item.cost)||"—")+'</span></div>'+
+        (cn ? '<div class="kv-row"><span class="k">Contractor</span><span class="v">'+esc(cn)+'</span></div>' : '')+
+      '</div>';
+      if(item.notes) body += '<div class="detail-section"><h3>Notes</h3><div class="notes-block">'+esc(item.notes)+'</div></div>';
+    } else if(type==="contact"){
+      title = item.name;
+      body += '<div class="detail-section">'+
+        (item.company ? '<div class="kv-row"><span class="k">Company</span><span class="v">'+esc(item.company)+'</span></div>' : '')+
+        '<div class="kv-row"><span class="k">Trade</span><span class="v">'+esc(item.trade||"—")+'</span></div>'+
+        (item.phone ? '<div class="contact-line"><a href="tel:'+esc(item.phone.replace(/[^0-9+]/g,""))+'">'+esc(item.phone)+'</a><button class="copy-btn" data-copy="'+esc(item.phone)+'">'+copyIcon()+'</button></div>' : '')+
+        (item.email ? '<div class="contact-line"><a href="mailto:'+esc(item.email)+'">'+esc(item.email)+'</a><button class="copy-btn" data-copy="'+esc(item.email)+'">'+copyIcon()+'</button></div>' : '')+
+      '</div>';
+      if(item.notes) body += '<div class="detail-section"><h3>Notes</h3><div class="notes-block">'+esc(item.notes)+'</div></div>';
+      var related = projects.filter(function(p){ return p.contractorId===item.id; });
+      if(related.length){
+        body += '<div class="detail-section"><h3>Projects</h3>';
+        related.forEach(function(p){
+          body += '<div class="related-project" data-open2="project" data-id2="'+esc(p.id)+'">'+esc(p.title)+' <span style="color:var(--ink-faint);">— '+fmtDate(p.date)+'</span></div>';
+        });
+        body += '</div>';
+      }
+    } else if(type==="maintenance"){
+      title = item.name;
+      var st = maintStatus(item);
+      var mcn = item.contactId ? contactName(item.contactId) : null;
+      var iv = INTERVALS.filter(function(i){return i.months===item.intervalMonths;})[0];
+      body += '<div class="detail-section">'+
+        '<div class="kv-row"><span class="k">Category</span><span class="v">'+esc(item.category||"—")+'</span></div>'+
+        '<div class="kv-row"><span class="k">Frequency</span><span class="v">'+(iv?iv.label:(item.intervalMonths+" months"))+'</span></div>'+
+        '<div class="kv-row"><span class="k">Last done</span><span class="v">'+(item.lastDone?fmtDate(item.lastDone):"—")+'</span></div>'+
+        '<div class="kv-row"><span class="k">Next due</span><span class="v">'+(st.nextDue?fmtDate(st.nextDue):"—")+'</span></div>'+
+        (mcn ? '<div class="kv-row"><span class="k">Contact</span><span class="v">'+esc(mcn)+'</span></div>' : '')+
+      '</div>';
+      if(item.notes) body += '<div class="detail-section"><h3>Notes</h3><div class="notes-block">'+esc(item.notes)+'</div></div>';
+      body += '<button class="btn primary" style="width:100%;margin-bottom:10px;" id="markDoneDetailBtn">Mark done today</button>';
+    }
+
+    var footer =
+      '<div class="form-actions">'+
+        '<button class="btn ghost" id="editBtn">Edit</button>'+
+        '<button class="btn danger" id="delBtn">Delete</button>'+
+      '</div>'+
+      '<div id="delConfirmZone"></div>';
+
+    var html = '<div class="sheet-head"><h2>'+esc(title)+'</h2><button class="icon-btn" id="closeSheet">'+closeIcon()+'</button></div>'+
+      '<div class="sheet-body">'+body+footer+'</div>';
+
+    showSheet(html);
+
+    $all(".copy-btn", $("#sheet")).forEach(function(b){
+      b.addEventListener("click", function(){ copyText(b.getAttribute("data-copy")); });
+    });
+    $all("[data-open2]", $("#sheet")).forEach(function(el){
+      el.addEventListener("click", function(){
+        openDetail(el.getAttribute("data-open2"), el.getAttribute("data-id2"));
+      });
+    });
+    var mdb = $("#markDoneDetailBtn", $("#sheet"));
+    if(mdb) mdb.addEventListener("click", function(){ markDone(item.id); closeSheet(); });
+
+    var editBtn = $("#editBtn", $("#sheet"));
+    if(editBtn) editBtn.addEventListener("click", function(){ openForm(type, item); });
+    var delBtn = $("#delBtn", $("#sheet"));
+    if(delBtn) delBtn.addEventListener("click", function(){
+      $("#delConfirmZone", $("#sheet")).innerHTML =
+        '<div class="confirm-row"><span>Delete this for good?</span><div class="ops">'+
+          '<button class="btn-mini" id="delNo">Cancel</button>'+
+          '<button class="btn-mini" id="delYes" style="background:var(--bad);color:#fff;border-color:var(--bad);">Delete</button>'+
+        '</div></div>';
+      $("#delNo").addEventListener("click", function(){ $("#delConfirmZone", $("#sheet")).innerHTML=""; });
+      $("#delYes").addEventListener("click", function(){
+        var coll = type==="project"?"projects":(type==="contact"?"contacts":"maintenance");
+        sb.from(coll).delete().eq("id", item.id).then(function(res){
+          if(res.error){ toast("Couldn't delete: "+res.error.message); return; }
+          toast("Deleted");
+          closeSheet();
+          fetchOne(coll);
+        });
+      });
+    });
+  }
+
+  function copyIcon(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>'; }
+  function closeIcon(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>'; }
+
+  function copyText(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast("Copied"); }).catch(function(){ fallbackCopy(text); });
+    } else fallbackCopy(text);
+  }
+  function fallbackCopy(text){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      toast("Copied");
+    }catch(e){ toast(text); }
+  }
+
+  // ---------- forms ----------
+  function openForm(type, existing){
+    var html = "";
+    if(type==="project"){
+      html = projectFormHtml(existing);
+    } else if(type==="contact"){
+      html = contactFormHtml(existing);
+    } else if(type==="maintenance"){
+      html = maintFormHtml(existing);
+    }
+    showSheet(html);
+    wireForm(type, existing);
+  }
+
+  function selectOptions(list, current){
+    return list.map(function(v){ return '<option value="'+esc(v)+'"'+(v===current?" selected":"")+'>'+esc(v)+'</option>'; }).join("");
+  }
+  function contactSelectOptions(current){
+    var opts = '<option value="">— None —</option>';
+    contacts.slice().sort(function(a,b){return (a.name||"").localeCompare(b.name||"");}).forEach(function(c){
+      opts += '<option value="'+esc(c.id)+'"'+(c.id===current?" selected":"")+'>'+esc(c.name)+'</option>';
+    });
+    return opts;
+  }
+
+  function projectFormHtml(p){
+    p = p || {};
+    return '<div class="sheet-head"><h2>'+(p.id?"Edit project":"Add project")+'</h2><button class="icon-btn" id="closeSheet">'+closeIcon()+'</button></div>'+
+      '<div class="sheet-body"><form id="entityForm">'+
+        '<div class="field"><label>Title</label><input required id="f_title" value="'+esc(p.title||"")+'" placeholder="e.g. Replaced kitchen faucet"></div>'+
+        '<div class="field-row">'+
+          '<div class="field"><label>Category</label><select id="f_category">'+selectOptions(PROJECT_CATS, p.category)+'</select></div>'+
+          '<div class="field"><label>Status</label><select id="f_status">'+selectOptions(PROJECT_STATUSES, p.status||"Done")+'</select></div>'+
+        '</div>'+
+        '<div class="field-row">'+
+          '<div class="field"><label>Date</label><input type="date" id="f_date" value="'+esc(p.date||todayISO())+'"></div>'+
+          '<div class="field"><label>Cost ($)</label><input type="number" inputmode="decimal" id="f_cost" value="'+esc(p.cost!==undefined&&p.cost!==null?p.cost:"")+'" placeholder="0"></div>'+
+        '</div>'+
+        '<div class="field"><label>Contractor</label><select id="f_contractor">'+contactSelectOptions(p.contractorId)+'</select></div>'+
+        '<div class="field"><label>Notes</label><textarea id="f_notes" placeholder="Materials used, warranty info, anything future-you should know…">'+esc(p.notes||"")+'</textarea></div>'+
+        '<div class="form-actions">'+
+          '<button type="button" class="btn ghost" id="cancelForm">Cancel</button>'+
+          '<button type="submit" class="btn primary">Save project</button>'+
+        '</div>'+
+      '</form></div>';
+  }
+
+  function contactFormHtml(c){
+    c = c || {};
+    return '<div class="sheet-head"><h2>'+(c.id?"Edit contact":"Add contact")+'</h2><button class="icon-btn" id="closeSheet">'+closeIcon()+'</button></div>'+
+      '<div class="sheet-body"><form id="entityForm">'+
+        '<div class="field"><label>Name</label><input required id="f_name" value="'+esc(c.name||"")+'" placeholder="e.g. Rocky Mountain Plumbing"></div>'+
+        '<div class="field"><label>Company</label><input id="f_company" value="'+esc(c.company||"")+'"></div>'+
+        '<div class="field"><label>Trade</label><select id="f_trade">'+selectOptions(TRADES, c.trade)+'</select></div>'+
+        '<div class="field-row">'+
+          '<div class="field"><label>Phone</label><input type="tel" id="f_phone" value="'+esc(c.phone||"")+'"></div>'+
+          '<div class="field"><label>Email</label><input type="email" id="f_email" value="'+esc(c.email||"")+'"></div>'+
+        '</div>'+
+        '<div class="field"><label>Notes</label><textarea id="f_notes" placeholder="What they did, how they were, who to ask for…">'+esc(c.notes||"")+'</textarea></div>'+
+        '<div class="form-actions">'+
+          '<button type="button" class="btn ghost" id="cancelForm">Cancel</button>'+
+          '<button type="submit" class="btn primary">Save contact</button>'+
+        '</div>'+
+      '</form></div>';
+  }
+
+  function maintFormHtml(m){
+    m = m || {};
+    var months = m.intervalMonths || 12;
+    return '<div class="sheet-head"><h2>'+(m.id?"Edit item":"Add maintenance item")+'</h2><button class="icon-btn" id="closeSheet">'+closeIcon()+'</button></div>'+
+      '<div class="sheet-body"><form id="entityForm">'+
+        '<div class="field"><label>Item</label><input required id="f_name" value="'+esc(m.name||"")+'" placeholder="e.g. Furnace filter"></div>'+
+        '<div class="field-row">'+
+          '<div class="field"><label>Category</label><select id="f_category">'+selectOptions(MAINT_CATS, m.category)+'</select></div>'+
+          '<div class="field"><label>Frequency</label><select id="f_interval">'+INTERVALS.map(function(i){return '<option value="'+i.months+'"'+(i.months===months?" selected":"")+'>'+i.label+'</option>';}).join("")+'</select></div>'+
+        '</div>'+
+        '<div class="field"><label>Last done</label><input type="date" id="f_lastdone" value="'+esc(m.lastDone||"")+'"><div class="hint">Leave blank if you haven\'t started tracking this yet.</div></div>'+
+        '<div class="field"><label>Contact</label><select id="f_contact">'+contactSelectOptions(m.contactId)+'</select></div>'+
+        '<div class="field"><label>Notes</label><textarea id="f_notes" placeholder="Filter size, part number, anything to remember…">'+esc(m.notes||"")+'</textarea></div>'+
+        '<div class="form-actions">'+
+          '<button type="button" class="btn ghost" id="cancelForm">Cancel</button>'+
+          '<button type="submit" class="btn primary">Save item</button>'+
+        '</div>'+
+      '</form></div>';
+  }
+
+  function wireForm(type, existing){
+    var sheet = $("#sheet");
+    $("#cancelForm", sheet).addEventListener("click", closeSheet);
+    $("#entityForm", sheet).addEventListener("submit", function(e){
+      e.preventDefault();
+      if(!sb){ toast("Not connected — check your setup"); return; }
+      var data = {};
+      if(type==="project"){
+        data = {
+          title: $("#f_title").value.trim(),
+          category: $("#f_category").value,
+          status: $("#f_status").value,
+          date: $("#f_date").value || todayISO(),
+          cost: $("#f_cost").value ? Number($("#f_cost").value) : null,
+          contractorId: $("#f_contractor").value || null,
+          notes: $("#f_notes").value.trim()
+        };
+        if(!data.title){ toast("Give the project a title"); return; }
+      } else if(type==="contact"){
+        data = {
+          name: $("#f_name").value.trim(),
+          company: $("#f_company").value.trim(),
+          trade: $("#f_trade").value,
+          phone: $("#f_phone").value.trim(),
+          email: $("#f_email").value.trim(),
+          notes: $("#f_notes").value.trim()
+        };
+        if(!data.name){ toast("Give the contact a name"); return; }
+      } else if(type==="maintenance"){
+        data = {
+          name: $("#f_name").value.trim(),
+          category: $("#f_category").value,
+          intervalMonths: Number($("#f_interval").value),
+          lastDone: $("#f_lastdone").value || null,
+          contactId: $("#f_contact").value || null,
+          notes: $("#f_notes").value.trim()
+        };
+        if(!data.name){ toast("Give this item a name"); return; }
+      }
+
+      var coll = type==="project"?"projects":(type==="contact"?"contacts":"maintenance");
+      var rowFn = type==="project"?projectToRow:(type==="contact"?contactToRow:maintToRow);
+      var promise;
+      if(existing && existing.id){
+        promise = sb.from(coll).update(rowFn(data)).eq("id", existing.id);
+      } else {
+        var row = rowFn(data);
+        row.id = (type==="project"?"p_":(type==="contact"?"c_":"m_")) + Date.now().toString(36) + "_" + uid();
+        row.created_at = Date.now();
+        promise = sb.from(coll).insert(row);
+      }
+      promise.then(function(res){
+        if(res.error){ toast("Couldn't save: "+res.error.message); return; }
+        toast("Saved");
+        closeSheet();
+        fetchOne(coll);
+      });
+    });
+  }
+
+  // ---------- sheet mechanics ----------
+  function showSheet(html){
+    $("#sheet").innerHTML = html;
+    $("#overlay").classList.add("open");
+    $("#closeSheet").addEventListener("click", closeSheet);
+    $("#overlay").onclick = function(e){ if(e.target.id==="overlay") closeSheet(); };
+  }
+  function closeSheet(){
+    $("#overlay").classList.remove("open");
+  }
+
+  // ---------- boot ----------
+  renderAll();
+  initDb();
+
+})();
+</script>
+</body>
+</html>
