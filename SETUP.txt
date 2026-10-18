@@ -1,0 +1,25 @@
+Merry Berry Murray Manor - Netlify Blobs version
+=================================================
+
+What's here
+  public/index.html            the app (same look as index-local.html)
+  netlify/functions/data.mjs   the small server piece; stores everything in Netlify Blobs
+  netlify.toml, package.json   tell Netlify how to build it
+
+One-time setup
+  1. In Netlify: Site configuration > Environment variables > Add a variable
+        HOUSELOG_PASSWORD = (a password you and Jen both know)
+  2. Deploy this whole folder (not just index.html). Functions don't get built from a
+     plain drag-and-drop of a single file. Two easy ways:
+       a) Push this folder to GitHub and connect the repo to your Netlify site, or
+       b) From this folder:  npm install  then  npx netlify-cli deploy --prod
+  3. Open the site. It asks for the password once per device, then remembers it.
+
+Moving your existing data
+  - First open on a fresh server fills in the original projects, contacts and upkeep list.
+  - If you've added or edited things in index-local.html since then: open that version,
+    Backup > Download backup, then open the Netlify site, Backup > Restore from backup.
+
+Day to day
+  - Backup > Download backup gives you a JSON copy any time. Worth doing now and then.
+  - Changes from the other person show up within about 20 seconds (or when you switch back to the tab).
